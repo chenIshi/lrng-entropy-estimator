@@ -23,7 +23,7 @@ The range of availabe random numbers in the evaluation list.
 - **RANDOM_BLOCK_SIZE** & **IDENTICAL_BLOCK_SIZE**  
 There are several way to construct a "random" list. However, due to our inspection on LRNG algorithm, we assumes that it is heavily rely on the "neighborhood" to determine its corresponding entropy. As a result, we craft a block-like cascuaded structure for sanity check.
 
-> TODO: attach a figure.
+![Structure for evaluation system](./figure/workflow.jpg "Structure for evaluation system")
 
 - **LRNG_DEPTH**  
 By default, the LRNG apply three layer of "difference" onto the original list. We want to further discuss the outcome if we apply more difference layer.

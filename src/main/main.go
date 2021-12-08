@@ -1,43 +1,24 @@
 package main
 
 import (
-	"math/rand"
 	"fmt"
 	"time"
 	"os"
+	"flag"
 	"estimator"
+	"rng"
 )
 
 const eval_method_count = 2
 
-// Stimuate entropy pools in lrng, i.e. input/output pool 
-// According user configuration, it would have to produce different level of "randomness" 
-// Also, there could different method to construct a "not-that-random" number
-func entropy_pool(request_ch chan int, entropy_chs [eval_method_count]chan int) {
-	// As for common practice, most RNG requires a true random seed to achieve unpredictability 
-	// However, here we actually don't care about such attribute 
-	// Also, using a fixed random seed help us reproduce the experiment results if desired 
-	rand.Seed(80)
-	for {
-		req := <-request_ch
-		// if the main process want to shut down the entropy collection pool 
-		if req < 0 {
-			// it should also propagate such signal to evaluators before shut down
-			for i:=0; i<eval_method_count; i++ {
-				entropy_chs[i] <- -1
-			}
-			return
-		} else {
-			rng_num :=  rand.Intn(req)
-			for i:=0; i<eval_method_count; i++ {
-				entropy_chs[i] <- rng_num
-			}
-		}
-	}
-}
+var testscale = flag.Int("n", 5000, "Amount of evaulated random number.")
+var maxrng = flag.Int("max", 50, "Maximum of random generated numbers.")
 
 func main() {
 	// User configuration
+	flag.Parse()
+	test_scale := *testscale
+	max_rng := *maxrng
 
 	// Module initialization
 	// request_ch: channel between "main" and "entropy_pool"
@@ -59,12 +40,9 @@ func main() {
 	for i := range demo_chs {
 		demo_chs[i] = make(chan bool)
 	}
-	go entropy_pool(request_ch, entropy_chs)
+	go rng.Entropy_pool(request_ch, entropy_chs)
 	go estimator.Lrng_eval_3(entropy_chs[0], response_ch, demo_chs[0])
 	go estimator.Differential_eval(entropy_chs[1], response_ch, demo_chs[1])
-
-	var test_scale int = 1000
-	var max_rng int = 50
 
 	for i:=0; i<test_scale; i++ {
 		request_ch <- max_rng
