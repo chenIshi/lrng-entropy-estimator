@@ -28,6 +28,18 @@ There are several way to construct a "random" list. However, due to our inspecti
 - **LRNG_DEPTH**  
 By default, the LRNG apply three layer of "difference" onto the original list. We want to further discuss the outcome if we apply more difference layer.
 
+### Design
+
+1. Prevent estimation starvation
+Consider that it would require different execution time among different estimators, there could be some "fast" estimators that always outpaced other slower estimators. 
+Such inconsistent working pace could lead to inconsistent working progress where 
+the collector are unable to yield a consistant view of evaluation, but also could lead to system invalidity (due to congested channel between goroutines).
+
+As a result, we need to adopt a "sliding window"-like method to regulate pacing of 
+estimators.
+
+2. 
+
 
 ### Reminder
 1. `export GOPATH=~/git-repos/lrng-entropy-estimator`

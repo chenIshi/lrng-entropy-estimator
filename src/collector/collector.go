@@ -49,7 +49,7 @@ func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg) {
 	}
 }
 
-func dump_csv(filename string, nums []int) {
+func dump_csv(filename string, entropies_from_sources [util.EVAL_METHEOD_COUNT][]float64) {
 	f, err := os.Create(filename)
 	defer f.Close()
 
@@ -59,4 +59,8 @@ func dump_csv(filename string, nums []int) {
 
 	w := csv.NewWriter(f)
 	defer w.Flush()
+}
+
+func plot(figname string, entropies_from_sources [util.EVAL_METHEOD_COUNT][]float64) {
+	
 }
