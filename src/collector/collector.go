@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"os"
 	"log"
+	"strconv"
 	"time"
 	"util"
 )
@@ -29,16 +30,17 @@ func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg) {
 		case ctrl_sig := <- ctrl_ch:
 			// jump to info dumping stage then shut down itself
 			if ctrl_sig.Signal == util.CTRL_OUT_REQ {
-				for i := range entropies_from_sources {
+				for i, entropies := range entropies_from_sources {
 					sum := 0.0
-					for j:=0;j<len(entropies_from_sources[i]);j++ {
-						sum += entropies_from_sources[i][j]
+					for j:=0;j<len(entropies);j++ {
+						sum += entropies[j]
 					}
-					avg := sum / float64(len(entropies_from_sources[i]))
+					avg := sum / float64(len(entropies))
 					if i == util.EVAL_LRNG3 {
 						fmt.Println("LRNG entropy estimation avg = ", avg)
 					}
 				}
+				dump_csv("eval.csv", entropies_from_sources)
 				ctrl_ch <- util.Ctrl_msg{Idx: ctrl_sig.Idx, Signal: util.CTRL_OUT_RESP}
 				return
 			}
@@ -52,15 +54,25 @@ func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg) {
 func dump_csv(filename string, entropies_from_sources [util.EVAL_METHEOD_COUNT][]float64) {
 	f, err := os.Create(filename)
 	defer f.Close()
+	checkError("Can't creat file", err)
 
-	if err != nil {
-		log.Fatalln("error writing ", filename, " due to ", err)
+	writer := csv.NewWriter(f)
+	defer writer.Flush()
+
+	err = writer.Write([]string{"idx", "val", "type"})
+	checkError("Can't write csv header", err)
+	for i, entropies := range entropies_from_sources {
+		for j, entropy := range entropies {
+			entropy_in_str := fmt.Sprintf("%.2f", entropy)
+			err = writer.Write([]string{strconv.Itoa(j), entropy_in_str, strconv.Itoa(i)})
+			checkError("Can't write csv content", err)
+		}
 	}
-
-	w := csv.NewWriter(f)
-	defer w.Flush()
 }
 
-func plot(figname string, entropies_from_sources [util.EVAL_METHEOD_COUNT][]float64) {
-	
+func checkError(message string, err error) {
+    if err != nil {
+        log.Fatalln(message, err)
+		os.Exit(1)
+    }
 }

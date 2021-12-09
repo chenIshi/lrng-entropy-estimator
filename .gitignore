@@ -1,2 +1,4 @@
 pkg/
 main
+*.csv
+plot/*.pdf

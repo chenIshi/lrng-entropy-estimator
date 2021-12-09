@@ -41,5 +41,12 @@ estimators.
 2. 
 
 
+### Quick start
+
+1. `go build src/main/main.go`
+2. `/main -n 1000 -max 10`
+3. `pushd plot; python3 plot.py; popd plot`
+
 ### Reminder
 1. `export GOPATH=~/git-repos/lrng-entropy-estimator`
+2. `go env -w GO111MODULE=off`
