@@ -1,17 +1,31 @@
 import pandas as pd 
 import seaborn as sns
 import matplotlib.pyplot as plt 
+import os
 
-data = pd.read_csv("../eval.csv")
+# read multiple csv data
+data_lists = []
+dir_name="../eval/"
+
+for f in os.listdir(dir_name):
+	filename = os.fsdecode(f)
+	if filename.endswith(".csv"):
+		data_lists.append(pd.read_csv(dir_name+filename))
+
+data = pd.concat(data_lists, axis=0)
+		
+
+# data = pd.read_csv("../eval.csv")
 plt.rcParams["font.family"] = "Ubuntu Condensed"
-fig, ax = plt.subplots(figsize=(4.5, 3))
+fig, ax = plt.subplots(figsize=(6, 3))
 
-'''
+
 pallete = sns.color_palette("husl", 8)
-my_pal = {"0": pallete[0], "1": pallete[4]}
-'''
+my_pal = {0: pallete[0], 1: pallete[4]}
+
 plt.grid(color="#605B56", linestyle="dotted", linewidth=1, alpha=0.8)
-plot = sns.lineplot(data=data, x="idx", y="val", hue="type")
+# plot = sns.lineplot(data=data, x="idx", y="val", hue="type", ax=ax)
+plot = sns.boxplot(data=data, x="type", y="val", hue="rngRange", ax=ax)
 
 
 plot.tick_params(left=False, bottom=False, labelsize=14)

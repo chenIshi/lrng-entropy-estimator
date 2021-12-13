@@ -1,4 +1,5 @@
 pkg/
 main
+eval/
 *.csv
 plot/*.pdf

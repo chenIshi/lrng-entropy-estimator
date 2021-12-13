@@ -45,10 +45,12 @@ func main() {
 
 	ctrl_ch := make(chan util.Ctrl_msg, 10)
 
+	util.Mkdir("eval")
+
 	go rng.Entropy_pool(request_ch, entropy_chs)
 	go estimator.Lrng_eval_3(entropy_chs[0], response_ch)
 	go estimator.Differential_eval(entropy_chs[1], response_ch)
-	go collector.Collector(response_ch, ctrl_ch)
+	go collector.Collector(response_ch, ctrl_ch, max_rng, test_scale)
 
 	for i:=0; i<test_scale; i++ {
 		request_ch <- util.Num_msg{Idx:i, Val:max_rng, Rng_t: util.RNG_UNI}

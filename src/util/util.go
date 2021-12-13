@@ -1,5 +1,11 @@
 package util
 
+import (
+	"os"
+	"syscall"
+	"log"
+)
+
 const EVAL_METHEOD_COUNT = 2
 
 // Different types of RNGs
@@ -52,4 +58,19 @@ func Min (nums []float64) float64 {
 		}
 	}
 	return min
+}
+
+func Mkdir(filename string) {
+	mask := syscall.Umask(0)
+	defer syscall.Umask(mask)
+
+	err := os.MkdirAll("eval", 0766)
+	CheckError("Can't create directory in collector", err)
+}
+
+func CheckError(message string, err error) {
+    if err != nil {
+        log.Fatalln(message, err)
+		os.Exit(1)
+    }
 }

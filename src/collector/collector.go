@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"encoding/csv"
 	"os"
-	"log"
 	"strconv"
 	"time"
 	"util"
 )
 
-func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg) {
+func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg, max_rng int, testscale int) {
 	// TODO: Improve with a sliding-window to buffer response counts 
 	// This is used to prevent some evaluation method is way faster than 
 	// others, causing congested channel 
@@ -40,7 +39,9 @@ func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg) {
 						fmt.Println("LRNG entropy estimation avg = ", avg)
 					}
 				}
-				dump_csv("eval.csv", entropies_from_sources)
+
+				filename := fmt.Sprintf("eval/eval-n%d-m%d.csv", testscale, max_rng)
+				dump_csv(filename, entropies_from_sources, max_rng)
 				ctrl_ch <- util.Ctrl_msg{Idx: ctrl_sig.Idx, Signal: util.CTRL_OUT_RESP}
 				return
 			}
@@ -51,28 +52,21 @@ func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg) {
 	}
 }
 
-func dump_csv(filename string, entropies_from_sources [util.EVAL_METHEOD_COUNT][]float64) {
+func dump_csv(filename string, entropies_from_sources [util.EVAL_METHEOD_COUNT][]float64, max_rng int) {
 	f, err := os.Create(filename)
 	defer f.Close()
-	checkError("Can't creat file", err)
+	util.CheckError("Can't creat file", err)
 
 	writer := csv.NewWriter(f)
 	defer writer.Flush()
 
-	err = writer.Write([]string{"idx", "val", "type"})
-	checkError("Can't write csv header", err)
+	err = writer.Write([]string{"idx", "val", "type", "rngRange"})
+	util.CheckError("Can't write csv header", err)
 	for i, entropies := range entropies_from_sources {
 		for j, entropy := range entropies {
 			entropy_in_str := fmt.Sprintf("%.2f", entropy)
-			err = writer.Write([]string{strconv.Itoa(j), entropy_in_str, strconv.Itoa(i)})
-			checkError("Can't write csv content", err)
+			err = writer.Write([]string{strconv.Itoa(j), entropy_in_str, strconv.Itoa(i), strconv.Itoa(max_rng)})
+			util.CheckError("Can't write csv content", err)
 		}
 	}
-}
-
-func checkError(message string, err error) {
-    if err != nil {
-        log.Fatalln(message, err)
-		os.Exit(1)
-    }
 }
