@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"encoding/csv"
 	"os"
+	"log"
 	"strconv"
 	"time"
 	"util"
@@ -35,9 +36,7 @@ func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg, ma
 						sum += entropies[j]
 					}
 					avg := sum / float64(len(entropies))
-					if util.Eval_t(i) == util.EVAL_LRNG3 {
-						fmt.Println("LRNG entropy estimation avg = ", avg)
-					}
+					log.Println("Entropy estimation in", util.Eval_t(i).String(), ": ", avg)
 				}
 
 				filename := fmt.Sprintf("eval/eval-n%d-m%d.csv", testscale, max_rng)

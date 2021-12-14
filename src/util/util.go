@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-const EVAL_METHEOD_COUNT = 2
+const EVAL_METHEOD_COUNT = 3
 
 // Different types of RNGs
 const (
@@ -23,16 +23,19 @@ type Num_msg struct {
 // Different types of evalulators
 type Eval_t int
 const (
-	EVAL_LRNG3 Eval_t = iota
-	EVAL_DIFF
+	EVAL_LRNG2 Eval_t = iota
+	EVAL_LRNG3
+	EVAL_LRNG4
 )
 
 func (e Eval_t) String() string {
 	switch e {
+	case EVAL_LRNG2:
+		return "LRNG2"
 	case EVAL_LRNG3:
 		return "LRNG3"
-	case EVAL_DIFF: 
-		return "DIFF"
+	case EVAL_LRNG4: 
+		return "LRNG4"
 	default:
 		return fmt.Sprintf("%d", int(e))
 	}
