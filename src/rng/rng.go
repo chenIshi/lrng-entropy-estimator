@@ -21,13 +21,13 @@ func Entropy_pool(request_ch chan util.Num_msg, entropy_chs [eval_method_count]c
 		if req.Val < 0 {
 			// it should also propagate such signal to evaluators before shut down
 			for i:=0; i<eval_method_count; i++ {
-				entropy_chs[i] <- util.Eval_msg{Idx: req.Idx, Val: -1, Eval_t: util.EVAL_LRNG3}
+				entropy_chs[i] <- util.Eval_msg{Idx: req.Idx, Val: -1, Eval: util.EVAL_LRNG3}
 			}
 			return
 		} else {
 			rng_num :=  rand.Intn(req.Val)
 			for i:=0; i<eval_method_count; i++ {
-				entropy_chs[i] <- util.Eval_msg{Idx: req.Idx, Val: rng_num, Eval_t: util.EVAL_LRNG3}
+				entropy_chs[i] <- util.Eval_msg{Idx: req.Idx, Val: rng_num, Eval: util.EVAL_LRNG3}
 			}
 		}
 	}

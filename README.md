@@ -43,9 +43,24 @@ estimators.
 
 ### Quick start
 
-1. `go build src/main/main.go`
-2. `/main -n 1000 -max 10`
-3. `pushd plot; python3 plot.py; popd plot`
+1. Compile the program
+
+	`go build src/main/main.go` 
+
+	Notice that the working directory should be the root of this project; **DONOT CD INTO OTHER SUBDIRECTORY**
+
+	> TODO: Add an configuration script and makefile
+
+2. Run several testcase
+	`./main -n 1000 -max 10`
+	`./main -n 2000 -max 20`
+	...
+
+	> TODO: Autoconfigurate the testscale that conforms to the "Law of large numbers"
+
+3. Plot evaluation figure
+
+	`pushd plot; python3 plot.py; popd plot`
 
 ### Reminder
 1. `export GOPATH=~/git-repos/lrng-entropy-estimator`

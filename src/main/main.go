@@ -11,8 +11,6 @@ import (
 	"util"
 )
 
-
-
 var testscale = flag.Int("n", 5000, "Amount of evaulated random number.")
 var maxrng = flag.Int("max", 50, "Maximum of random generated numbers.")
 

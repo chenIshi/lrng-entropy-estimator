@@ -4,6 +4,7 @@ import (
 	"os"
 	"syscall"
 	"log"
+	"fmt"
 )
 
 const EVAL_METHEOD_COUNT = 2
@@ -20,22 +21,34 @@ type Num_msg struct {
 }
 
 // Different types of evalulators
+type Eval_t int
 const (
-	EVAL_LRNG3 int = iota
+	EVAL_LRNG3 Eval_t = iota
 	EVAL_DIFF
 )
+
+func (e Eval_t) String() string {
+	switch e {
+	case EVAL_LRNG3:
+		return "LRNG3"
+	case EVAL_DIFF: 
+		return "DIFF"
+	default:
+		return fmt.Sprintf("%d", int(e))
+	}
+}
 
 type Eval_msg struct {
 	Idx int
 	Val int
-	Eval_t int
+	Eval Eval_t
 }
 
 // Entropy to collectors
 type Entropy_msg struct {
 	Idx int
 	Val float64
-	Eval_t int
+	Eval Eval_t
 }
 
 // Controller signals

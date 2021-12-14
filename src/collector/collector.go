@@ -20,7 +20,7 @@ func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg, ma
 		collector_timer := time.NewTimer(time.Duration(80 * time.Millisecond))
 		select {
 		case resp:= <- response_ch:
-			entropies_from_sources[resp.Eval_t] = append(entropies_from_sources[resp.Eval_t], resp.Val)
+			entropies_from_sources[int(resp.Eval)] = append(entropies_from_sources[int(resp.Eval)], resp.Val)
 			comm_resp_cnt ++
 			if comm_resp_cnt >= util.EVAL_METHEOD_COUNT {
 				ctrl_ch <- util.Ctrl_msg{Idx: resp.Idx, Signal: util.CTRL_COMM_RESP}
@@ -35,7 +35,7 @@ func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg, ma
 						sum += entropies[j]
 					}
 					avg := sum / float64(len(entropies))
-					if i == util.EVAL_LRNG3 {
+					if util.Eval_t(i) == util.EVAL_LRNG3 {
 						fmt.Println("LRNG entropy estimation avg = ", avg)
 					}
 				}
@@ -65,7 +65,7 @@ func dump_csv(filename string, entropies_from_sources [util.EVAL_METHEOD_COUNT][
 	for i, entropies := range entropies_from_sources {
 		for j, entropy := range entropies {
 			entropy_in_str := fmt.Sprintf("%.2f", entropy)
-			err = writer.Write([]string{strconv.Itoa(j), entropy_in_str, strconv.Itoa(i), strconv.Itoa(max_rng)})
+			err = writer.Write([]string{strconv.Itoa(j), entropy_in_str, util.Eval_t(i).String(), strconv.Itoa(max_rng)})
 			util.CheckError("Can't write csv content", err)
 		}
 	}

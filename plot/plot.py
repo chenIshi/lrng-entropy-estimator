@@ -25,12 +25,12 @@ my_pal = {0: pallete[0], 1: pallete[4]}
 
 plt.grid(color="#605B56", linestyle="dotted", linewidth=1, alpha=0.8)
 # plot = sns.lineplot(data=data, x="idx", y="val", hue="type", ax=ax)
-plot = sns.boxplot(data=data, x="type", y="val", hue="rngRange", ax=ax)
+plot = sns.boxplot(data=data, x="rngRange", y="val", hue="type", ax=ax)
 
 
 plot.tick_params(left=False, bottom=False, labelsize=14)
-ax.set_xlabel("Time (per entropy trial)", fontsize=18)
-ax.set_ylabel("Evaluated entropy", fontsize=18)
+ax.set_xlabel("Random number range", fontsize=18)
+ax.set_ylabel("Entropy(bit)", fontsize=18)
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles=handles, labels=["LRNG3", "DIFF"], bbox_to_anchor=(0.5,1.1), loc='center', frameon=False, fontsize=16, ncol=2)
 

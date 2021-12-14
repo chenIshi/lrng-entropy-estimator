@@ -33,9 +33,9 @@ func Lrng_eval_3(entropy_ch chan util.Eval_msg, response_ch chan util.Entropy_ms
 				} else if delta > 2{
 					entropy = math.Log2(delta)
 				}
-				response_ch <- util.Entropy_msg{Idx: rng_num.Idx, Val: entropy, Eval_t: util.EVAL_LRNG3}
+				response_ch <- util.Entropy_msg{Idx: rng_num.Idx, Val: entropy, Eval: util.EVAL_LRNG3}
 			} else {
-				response_ch <- util.Entropy_msg{Idx: rng_num.Idx, Val: 0, Eval_t: util.EVAL_LRNG3}
+				response_ch <- util.Entropy_msg{Idx: rng_num.Idx, Val: 0, Eval: util.EVAL_LRNG3}
 			}
 			eval_round ++
 		}
@@ -89,7 +89,7 @@ func Differential_eval(entropy_ch chan util.Eval_msg, response_ch chan util.Entr
 		if rng_num.Val < 0 {
 			return
 		} else {
-			response_ch <- util.Entropy_msg{Idx: rng_num.Idx, Val: 0, Eval_t: util.EVAL_DIFF}
+			response_ch <- util.Entropy_msg{Idx: rng_num.Idx, Val: 0, Eval: util.EVAL_DIFF}
 		}
 		/*
 		select {
