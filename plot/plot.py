@@ -32,7 +32,7 @@ plot.tick_params(left=False, bottom=False, labelsize=14)
 ax.set_xlabel("Random number range", fontsize=18)
 ax.set_ylabel("Entropy(bit)", fontsize=18)
 handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles=handles, labels=["LRNG3", "DIFF"], bbox_to_anchor=(0.5,1.1), loc='center', frameon=False, fontsize=16, ncol=2)
+ax.legend(handles=handles, bbox_to_anchor=(0.5,1.1), loc='center', frameon=False, fontsize=16, ncol=len(labels))
 
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
