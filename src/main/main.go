@@ -13,12 +13,24 @@ import (
 
 var testscale = flag.Int("n", 5000, "Amount of evaulated random number.")
 var maxrng = flag.Int("max", 50, "Maximum of random generated numbers.")
+var rngtype = flag.String("rng", "uniform", "Random number generation function")
 
 func main() {
 	// User configuration
 	flag.Parse()
 	test_scale := *testscale
 	max_rng := *maxrng
+	var rng_type util.Rng_t
+
+	switch *rngtype {
+	case "uniform":
+		rng_type = util.RNG_UNI
+	case "rule_30":
+		rng_type = util.RNG_RULE30
+	default:
+		fmt.Println("Supported RNG functions only include \"uniform\" and \"rule 30\" for now !")
+		os.Exit(1)
+	}
 
 	// Module initialization
 	// request_ch: channel between "main" and "entropy_pool"
@@ -45,14 +57,14 @@ func main() {
 
 	util.Mkdir("eval")
 
-	go rng.Entropy_pool(request_ch, entropy_chs)
+	go rng.Entropy_pool(request_ch, entropy_chs, rng_type)
 	go estimator.Lrng_eval_2(entropy_chs[0], response_ch)
 	go estimator.Lrng_eval_3(entropy_chs[1], response_ch)
 	go estimator.Lrng_eval_4(entropy_chs[2], response_ch)
 	go collector.Collector(response_ch, ctrl_ch, max_rng, test_scale)
 
 	for i:=0; i<test_scale; i++ {
-		request_ch <- util.Num_msg{Idx:i, Val:max_rng, Rng_t: util.RNG_UNI}
+		request_ch <- util.Num_msg{Idx:i, Val:max_rng, Rng: util.RNG_UNI}
 		
 		lrng_timer := time.NewTimer(time.Duration(160 * time.Millisecond))
 		select {
@@ -71,21 +83,8 @@ func main() {
 	case <- demo_timer.C:
 		fmt.Fprintf(os.Stderr, "error: timeout in main at demoing LRNG\n")
 		os.Exit(1)
-	}
-
-	/*
-	for k:=0; k<util.EVAL_METHEOD_COUNT; k++ {
-		demo_chs[k] <- true
-		select {
-		case <- demo_chs[k]:
-		case <- demo_timer.C:
-			fmt.Fprintf(os.Stderr, "error: timeout in main at demoing LRNG\n")
-			os.Exit(1)
-		}
-	}
-	*/
-	
+	}	
 
 	// Cleanup goroutines (Potentially useless)
-	request_ch <- util.Num_msg{Idx:1, Val:-1, Rng_t: util.RNG_UNI}
+	request_ch <- util.Num_msg{Idx:1, Val:-1, Rng: util.RNG_UNI}
 }

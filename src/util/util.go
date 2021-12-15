@@ -7,17 +7,31 @@ import (
 	"fmt"
 )
 
+const RNG_METHOD_COUNT = 2
 const EVAL_METHEOD_COUNT = 3
 
 // Different types of RNGs
+type Rng_t int
 const (
-	RNG_UNI int = iota
+	RNG_UNI Rng_t = iota
+	RNG_RULE30
 )
+
+func (r Rng_t) String() string {
+	switch r {
+	case RNG_UNI:
+		return "Uniform"
+	case RNG_RULE30:
+		return "Rule_30"
+	default:
+		return fmt.Sprintf("%d", int(r))
+	}
+}
 
 type Num_msg struct {
 	Idx int
 	Val int
-	Rng_t int
+	Rng Rng_t
 }
 
 // Different types of evalulators
