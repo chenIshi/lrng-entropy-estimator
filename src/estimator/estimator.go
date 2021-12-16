@@ -8,7 +8,7 @@ import (
 func Lrng_eval_2(entropy_ch chan util.Eval_msg, response_ch chan util.Entropy_msg) {
 	// LRNG entropy estimation requires to keep the previous states 
 	// By default, it would require a 3 step of differential, that is 4 states in total
-	pre_states := []int{-1, -1,-1}
+	pre_states := []int64{-1, -1,-1}
 	// As stated above, LRNG requires to collect previous states before estimation 
 	// In this case, it would start actual estimation until the fourth round
 	eval_round := 0
@@ -44,7 +44,7 @@ func Lrng_eval_2(entropy_ch chan util.Eval_msg, response_ch chan util.Entropy_ms
 func Lrng_eval_3(entropy_ch chan util.Eval_msg, response_ch chan util.Entropy_msg) {
 	// LRNG entropy estimation requires to keep the previous states 
 	// By default, it would require a 3 step of differential, that is 4 states in total
-	pre_states := []int{-1, -1,-1, -1}
+	pre_states := []int64{-1, -1,-1, -1}
 	// As stated above, LRNG requires to collect previous states before estimation 
 	// In this case, it would start actual estimation until the fourth round
 	eval_round := 0
@@ -81,7 +81,7 @@ func Lrng_eval_3(entropy_ch chan util.Eval_msg, response_ch chan util.Entropy_ms
 func Lrng_eval_4(entropy_ch chan util.Eval_msg, response_ch chan util.Entropy_msg) {
 	// LRNG entropy estimation requires to keep the previous states 
 	// By default, it would require a 3 step of differential, that is 4 states in total
-	pre_states := []int{-1, -1,-1, -1, -1}
+	pre_states := []int64{-1, -1,-1, -1, -1}
 	// As stated above, LRNG requires to collect previous states before estimation 
 	// In this case, it would start actual estimation until the fourth round
 	eval_round := 0

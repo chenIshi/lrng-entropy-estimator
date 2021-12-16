@@ -10,7 +10,7 @@ import (
 	"util"
 )
 
-func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg, max_rng int, testscale int) {
+func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg, max_rng int64, testscale uint64) {
 	// TODO: Improve with a sliding-window to buffer response counts 
 	// This is used to prevent some evaluation method is way faster than 
 	// others, causing congested channel 
@@ -39,8 +39,8 @@ func Collector(response_ch chan util.Entropy_msg, ctrl_ch chan util.Ctrl_msg, ma
 					log.Println("Entropy estimation in", util.Eval_t(i).String(), ": ", avg)
 				}
 
-				filename := fmt.Sprintf("eval/eval-n%d-m%d.csv", testscale, max_rng)
-				dump_csv(filename, entropies_from_sources, max_rng)
+				filename := fmt.Sprintf("eval/eval-n%d-m%d.csv", testscale, int(max_rng))
+				dump_csv(filename, entropies_from_sources, int(max_rng))
 				ctrl_ch <- util.Ctrl_msg{Idx: ctrl_sig.Idx, Signal: util.CTRL_OUT_RESP}
 				return
 			}

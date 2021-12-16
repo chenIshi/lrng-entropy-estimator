@@ -11,7 +11,7 @@ const RNG_METHOD_COUNT = 2
 const EVAL_METHEOD_COUNT = 3
 
 // Different types of RNGs
-type Rng_t int
+type Rng_t uint8
 const (
 	RNG_UNI Rng_t = iota
 	RNG_RULE30
@@ -29,13 +29,13 @@ func (r Rng_t) String() string {
 }
 
 type Num_msg struct {
-	Idx int
-	Val int
+	Idx uint64
+	Val int64
 	Rng Rng_t
 }
 
 // Different types of evalulators
-type Eval_t int
+type Eval_t uint8
 const (
 	EVAL_LRNG2 Eval_t = iota
 	EVAL_LRNG3
@@ -56,28 +56,28 @@ func (e Eval_t) String() string {
 }
 
 type Eval_msg struct {
-	Idx int
-	Val int
+	Idx uint64
+	Val int64
 	Eval Eval_t
 }
 
 // Entropy to collectors
 type Entropy_msg struct {
-	Idx int
+	Idx uint64
 	Val float64
 	Eval Eval_t
 }
 
 // Controller signals
 const (
-	CTRL_COMM_RESP int = iota
+	CTRL_COMM_RESP uint8 = iota
 	CTRL_OUT_REQ
 	CTRL_OUT_RESP
 )
 
 type Ctrl_msg struct {
-	Idx int
-	Signal int
+	Idx uint64
+	Signal uint8
 }
 
 func Min (nums []float64) float64 {

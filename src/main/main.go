@@ -11,8 +11,8 @@ import (
 	"util"
 )
 
-var testscale = flag.Int("n", 5000, "Amount of evaulated random number.")
-var maxrng = flag.Int("max", 50, "Maximum of random generated numbers.")
+var testscale = flag.Uint64("n", 5000, "Amount of evaulated random number.")
+var maxrng = flag.Int64("max", 50, "Maximum of random generated numbers.")
 var rngtype = flag.String("rng", "uniform", "Random number generation function")
 
 func main() {
@@ -63,7 +63,8 @@ func main() {
 	go estimator.Lrng_eval_4(entropy_chs[2], response_ch)
 	go collector.Collector(response_ch, ctrl_ch, max_rng, test_scale)
 
-	for i:=0; i<test_scale; i++ {
+	var i uint64
+	for i=0; i<test_scale; i++ {
 		request_ch <- util.Num_msg{Idx:i, Val:max_rng, Rng: util.RNG_UNI}
 		
 		lrng_timer := time.NewTimer(time.Duration(160 * time.Millisecond))

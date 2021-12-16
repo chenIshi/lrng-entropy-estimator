@@ -8,7 +8,7 @@ import (
 	"util"
 )
 
-type RandFunc func(num_chan chan int)
+type RandFunc func(num_chan chan int64)
 
 // Stimuate entropy pools in lrng, i.e. input/output pool 
 // According user configuration, it would have to produce different level of "randomness" 
@@ -20,7 +20,7 @@ func Entropy_pool(request_ch chan util.Num_msg, entropy_chs [util.EVAL_METHEOD_C
 	}
 	rand_funcs := register_rngs()
 
-	num_chan := make(chan int)
+	num_chan := make(chan int64)
 	go rand_funcs[int(rng_type)](num_chan)
 	for {
 		req := <-request_ch
@@ -39,7 +39,7 @@ func Entropy_pool(request_ch chan util.Num_msg, entropy_chs [util.EVAL_METHEOD_C
 			num_chan <- req.Val
 
 			rng_timer := time.NewTimer(time.Duration(100 * time.Millisecond))
-			var rand_val int
+			var rand_val int64
 			select {
 			case num := <- num_chan:
 				rand_val = num
@@ -62,7 +62,7 @@ func register_rngs() []RandFunc {
 	return rng_handler
 }
 
-func Rand_buildin_pseudo(num_chan chan int) {
+func Rand_buildin_pseudo(num_chan chan int64) {
 	// As for common practice, most RNG requires a true random seed to achieve unpredictability 
 	// However, here we actually don't care about such attribute 
 	// Also, using a fixed random seed help us reproduce the experiment results if desired 
@@ -72,7 +72,7 @@ func Rand_buildin_pseudo(num_chan chan int) {
 		timer := time.NewTimer(time.Duration(80 * time.Millisecond))
 		select {
 		case req_max := <- num_chan:
-			num_chan <- rand.Intn(req_max)
+			num_chan <- rand.Int63n(req_max)
 		case <- timer.C:
 			fmt.Fprintf(os.Stderr, "error: timeout in main at build-in rng\n")
 			os.Exit(1)
@@ -80,7 +80,7 @@ func Rand_buildin_pseudo(num_chan chan int) {
 	}
 }
 
-func Rand_rule30(num_chan chan int) {
+func Rand_rule30(num_chan chan int64) {
 	for {
 		timer := time.NewTimer(time.Duration(80 * time.Millisecond))
 		select {
